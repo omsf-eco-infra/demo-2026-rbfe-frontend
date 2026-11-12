@@ -161,7 +161,7 @@ h1 span {
 }
 
 .hero-description {
-  max-width: 30ch;
+  max-width: 48ch;
   margin-top: 1.25rem;
   color: #34554b;
   font-size: clamp(1.05rem, 2vw, 1.3rem);
