@@ -1,0 +1,45 @@
+name: Package generic static site from push
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  GENERIC_SOURCE_DIR: "dist"
+  GENERIC_OUTPUT_DIR: "."
+  VITE_LAMBDA_URL: ${{ vars.VITE_LAMBDA_URL }}
+  VITE_OUTPUTS_PUBLIC_BASE_URL: ${{ vars.VITE_OUTPUTS_PUBLIC_BASE_URL }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4.2"
+
+      - name: Build site
+        run: |
+          : "${VITE_LAMBDA_URL:?Set the VITE_LAMBDA_URL repository variable}"
+          : "${VITE_OUTPUTS_PUBLIC_BASE_URL:?Set the VITE_OUTPUTS_PUBLIC_BASE_URL repository variable}"
+          bun install --frozen-lockfile
+          bun --bun run build
+
+      - name: Make artifact
+        shell: bash
+        run: tar -czf "$RUNNER_TEMP/site.tar.gz" -C "$GENERIC_SOURCE_DIR" "$GENERIC_OUTPUT_DIR"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: site-build
+          path: ${{ runner.temp }}/site.tar.gz
+          if-no-files-found: error
+          retention-days: 1

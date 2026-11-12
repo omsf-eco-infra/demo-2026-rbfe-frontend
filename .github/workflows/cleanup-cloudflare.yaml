@@ -1,0 +1,18 @@
+name: Cleanup generic static site staging
+
+on:
+  pull_request_target:
+    types: [closed]
+
+permissions: {}
+
+jobs:
+  cleanup-staging:
+    if: ${{ github.repository == vars.MAIN_REPO }}
+    uses: omsf/static-site-tools/.github/workflows/cleanup-cloudflare.yaml@bddfe9537ca08333360801f82a95bb4adaff314e
+    with:
+      pr_number: ${{ github.event.pull_request.number }}
+      project_name: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

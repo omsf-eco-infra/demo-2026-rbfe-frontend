@@ -1,0 +1,42 @@
+name: Upload generic static site to staging
+
+on:
+  workflow_run:
+    workflows: ["Package generic static site from PR"]
+    types:
+      - completed
+
+jobs:
+  get-metadata:
+    if: ${{ github.repository == vars.MAIN_REPO && github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      pr_number: ${{ steps.pr-metadata.outputs.pr-number }}
+      pr_headsha: ${{ steps.pr-metadata.outputs.pr-headsha }}
+
+    steps:
+      - name: Get PR metadata from action
+        id: pr-metadata
+        uses: omsf/static-site-tools/pr-info-from-workflow-run@bddfe9537ca08333360801f82a95bb4adaff314e
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  stage:
+    needs: get-metadata
+    uses: omsf/static-site-tools/.github/workflows/stage-cloudflare.yaml@bddfe9537ca08333360801f82a95bb4adaff314e
+    permissions:
+      actions: read
+      statuses: write
+      pull-requests: write
+    with:
+      run-id: ${{ github.event.workflow_run.id }}
+      pr-number: ${{ fromJSON(needs.get-metadata.outputs.pr_number) }}
+      pr-headsha: ${{ needs.get-metadata.outputs.pr_headsha }}
+      project-name: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
+      html-dir: "."
+      label: Demo frontend
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
