@@ -1,0 +1,11 @@
+[workspace]
+authors = ["David W.H. Swenson <dwhs@hyperblazer.net>"]
+channels = ["conda-forge"]
+name = "demo-2026-rbfe-frontend"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+bun = ">=1.4.2,<2"

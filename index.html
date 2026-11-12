@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Plan an RBFE campaign with OpenFE using the Hybrid Topology protocol." />
+    <link rel="icon" type="image/svg+xml" href="/omsf-mark.svg" />
+    <title>Plan an RBFE campaign | OMSF</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href="https://omsf.io/">
+          <img src="/omsf-mark.svg" alt="" width="44" height="30" />
+          <span>Open Molecular<br />Software Foundation</span>
+        </a>
+        <a class="external-link" href="https://openfree.energy/">
+          OpenFE <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-heading">
+        <div class="shell hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow"><span></span> OpenFE demo</p>
+            <h1 id="page-heading">Plan an<br />RBFE campaign<span>.</span></h1>
+            <p class="hero-description">Use OpenFE’s Hybrid Topology protocol to plan a campaign from your ligand set and target protein.</p>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="hero-grid"></div>
+            <div class="hero-orbit"></div>
+            <div class="hero-mark"></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="shell workspace">
+        <section class="run-card" id="inputs" aria-labelledby="inputs-heading">
+          <h2 id="inputs-heading">Input files</h2>
+          <p class="section-description">Choose a ligand SDF and a protein PDB. OpenFE assigns ligand partial charges before planning the network.</p>
+
+          <form id="network-form">
+            <fieldset id="file-pickers" aria-label="Network input files">
+              <label class="file-picker">
+                <span class="file-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z M12 3v9m8-4.5L12 12m-8-4.5 8 4.5v9" /></svg></span>
+                <span class="picker-copy">
+                  <strong>Ligands <span class="file-type">.sdf</span></strong>
+                  <span class="picker-instruction" aria-hidden="true">Drop a file here or <span>browse</span></span>
+                </span>
+                <input id="sdf" type="file" accept=".sdf" aria-label="Ligands (.sdf)" aria-describedby="sdf-selection" />
+                <span id="sdf-selection" class="selection" aria-live="polite">No file selected</span>
+              </label>
+              <label class="file-picker">
+                <span class="file-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 6.5c2.5-3.5 7-3.5 8.5-1 2 3.5-5.5 4-5 7.5.3 2.5 5.5 1 5.5 4 0 2.5-5.5 4.5-8 1.5m0-10.5c-3 1-4.5 4-2.5 6 1.2 1.2 3.5 1 4.5.5" /></svg></span>
+                <span class="picker-copy">
+                  <strong>Protein <span class="file-type">.pdb</span></strong>
+                  <span class="picker-instruction" aria-hidden="true">Drop a file here or <span>browse</span></span>
+                </span>
+                <input id="pdb" type="file" accept=".pdb" aria-label="Protein (.pdb)" aria-describedby="pdb-selection" />
+                <span id="pdb-selection" class="selection" aria-live="polite">No file selected</span>
+              </label>
+            </fieldset>
+            <div class="form-actions">
+              <p class="form-hint" id="build-hint">Both files are required.</p>
+              <button id="build" type="submit" aria-describedby="build-hint" disabled>
+                Plan campaign <span aria-hidden="true">→</span>
+              </button>
+            </div>
+          </form>
+
+          <p id="input-status" role="status"></p>
+        </section>
+
+        <section class="run-card" id="progress" aria-labelledby="progress-heading" hidden>
+          <h2 id="progress-heading">Progress</h2>
+          <div class="progress-phases">
+            <div class="progress-phase">
+              <h3 id="charging-heading">Ligand charging</h3>
+              <p id="charging-status" role="status" aria-labelledby="charging-heading">Waiting</p>
+              <details class="phase-image" id="charging-image" hidden>
+                <summary>OMSF base image <code></code></summary>
+                <code></code>
+              </details>
+            </div>
+            <span class="progress-arrow" aria-hidden="true">→</span>
+            <div class="progress-phase">
+              <h3 id="planning-heading">Network planning</h3>
+              <p id="planning-status" role="status" aria-labelledby="planning-heading">Waiting</p>
+              <details class="phase-image" id="planning-image" hidden>
+                <summary>OMSF base image <code></code></summary>
+                <code></code>
+              </details>
+            </div>
+          </div>
+          <p id="status" role="status"></p>
+          <p id="run-link-note" hidden>
+            Bookmark or copy <a id="run-link">this run link</a> to find your results later.
+          </p>
+        </section>
+
+        <section class="run-card" id="files" aria-labelledby="files-heading" hidden>
+          <h2 id="files-heading">Files</h2>
+          <ul class="downloads">
+            <li hidden><a id="charged-ligands">Charged ligands <span>SDF <span aria-hidden="true">↓</span></span></a></li>
+            <li hidden><a id="ligand-network">Ligand network <span>GraphML <span aria-hidden="true">↓</span></span></a></li>
+            <li hidden><a id="alchemical-network">Alchemical network <span>ZIP <span aria-hidden="true">↓</span></span></a></li>
+          </ul>
+        </section>
+
+        <section class="run-card" id="visualizations" aria-labelledby="visualizations-heading" hidden>
+          <h2 id="visualizations-heading">Visualizations</h2>
+          <p id="visualization-status" role="status"></p>
+          <div class="network-tabs" role="tablist" aria-label="Network visualizations">
+            <button id="ligand-tab" type="button" role="tab" aria-controls="ligand-panel"
+                    aria-selected="false" tabindex="-1" data-visualization="ligand_network_viz" disabled>
+              Ligand network
+            </button>
+            <button id="alchemical-tab" type="button" role="tab" aria-controls="alchemical-panel"
+                    aria-selected="false" tabindex="-1" data-visualization="alchemical_network_viz" disabled>
+              Alchemical network
+            </button>
+          </div>
+          <div id="ligand-panel" role="tabpanel" aria-labelledby="ligand-tab" tabindex="0" hidden></div>
+          <div id="alchemical-panel" role="tabpanel" aria-labelledby="alchemical-tab" tabindex="0" hidden></div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <span>Open Molecular Software Foundation</span>
+        <a class="external-link" href="https://omsf.io/">omsf.io <span aria-hidden="true">↗</span></a>
+      </div>
+    </footer>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
